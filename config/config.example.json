@@ -1,0 +1,45 @@
+{
+  "bridge": {
+    "id": "my-bridge",
+    "rtsp_port": 554
+  },
+  "network": {
+    "mode": "macvlan",
+    "parent_interface": "eth0",
+    "prefix_length": 24,
+    "route_metric": 42700,
+    "gateway": null
+  },
+  "upstream": {
+    "host": "192.0.2.20",
+    "rtsp_port": 554,
+    "username": "",
+    "password": "",
+    "rtsp_path": "/cam/realmonitor?channel={channel}&subtype={subtype}",
+    "snapshot_url": "http://{host}:80/cgi-bin/snapshot.cgi?channel={channel}"
+  },
+  "camera_defaults": {
+    "onvif_port": 8000,
+    "subtype": 0,
+    "manufacturer": "ONVIF RTSP Bridge",
+    "model": "Virtual Channel",
+    "video": {
+      "width": 960,
+      "height": 576,
+      "fps": 25,
+      "bitrate_kbps": 4096,
+      "gov_length": 50
+    }
+  },
+  "cameras": [
+    {"id": "channel-1", "ip": "192.0.2.101", "channel": 1, "name": "Entrance"},
+    {"id": "channel-2", "ip": "192.0.2.102", "channel": 2, "name": "Yard"},
+    {"id": "channel-3", "ip": "192.0.2.103", "channel": 3},
+    {"id": "channel-4", "ip": "192.0.2.104", "channel": 4},
+    {"id": "channel-5", "ip": "192.0.2.105", "channel": 5},
+    {"id": "channel-6", "ip": "192.0.2.106", "channel": 6},
+    {"id": "channel-7", "ip": "192.0.2.107", "channel": 7},
+    {"id": "channel-8", "ip": "192.0.2.108", "channel": 8},
+    {"id": "channel-9", "ip": "192.0.2.109", "channel": 9}
+  ]
+}

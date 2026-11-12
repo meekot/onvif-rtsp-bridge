@@ -1,0 +1,8 @@
+[Unit]
+Description=ONVIF RTSP Bridge
+Requires=bridge-network.service
+Wants=onvif-bridge.service rtsp-bridge.service
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target

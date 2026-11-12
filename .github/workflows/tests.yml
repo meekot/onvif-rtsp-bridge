@@ -1,0 +1,49 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Check installer shell syntax
+        run: sh -n deploy/install.sh
+      - name: Run standard-library tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate example configuration
+        run: python src/onvif_proxy.py --config config/config.example.json --check-config
+
+  python35:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Download official portable Python 3.5.3
+        shell: pwsh
+        run: |
+          $legacyZip = Join-Path $env:RUNNER_TEMP 'python-3.5.3.zip'
+          $legacyDir = Join-Path $env:RUNNER_TEMP 'python-3.5.3'
+          Invoke-WebRequest 'https://www.python.org/ftp/python/3.5.3/python-3.5.3-embed-amd64.zip' -OutFile $legacyZip
+          $expected = 'CC6BA08167A0BA032FE05F96246832887271E6B65E7B3890D1258C0C3035C4CD'
+          if ((Get-FileHash $legacyZip -Algorithm SHA256).Hash -ne $expected) { throw 'Unexpected Python archive checksum' }
+          Expand-Archive -LiteralPath $legacyZip -DestinationPath $legacyDir
+          & "$legacyDir/python.exe" -m unittest discover -s tests -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "$legacyDir/python.exe" src/onvif_proxy.py --config config/config.example.json --check-config
+          exit $LASTEXITCODE

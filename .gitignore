@@ -1,0 +1,12 @@
+.local-backup/
+config/*
+!config/config.example.json
+*.local.json
+__pycache__/
+*.py[cod]
+*.log
+.venv/
+.env
+.DS_Store
+Thumbs.db
+dist/

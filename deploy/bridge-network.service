@@ -1,0 +1,25 @@
+[Unit]
+Description=Virtual camera macvlan interfaces
+Wants=network-online.target
+After=network-online.target
+Before=onvif-bridge.service rtsp-bridge.service
+PartOf=onvif-rtsp-bridge.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=90
+RemainAfterExit=yes
+User=root
+WorkingDirectory=/opt/onvif-rtsp-bridge
+ExecStart=/usr/bin/python3 -u src/bridge_network.py --config /etc/onvif-rtsp-bridge/config.json up
+ExecStop=/usr/bin/python3 -u src/bridge_network.py --config /etc/onvif-rtsp-bridge/config.json down
+CapabilityBoundingSet=CAP_NET_ADMIN
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+Environment=PYTHONDONTWRITEBYTECODE=1
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=onvif-rtsp-bridge.target
